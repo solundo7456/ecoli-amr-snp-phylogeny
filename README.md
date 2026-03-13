@@ -25,13 +25,9 @@ This project performs whole genome analysis of *Escherichia coli* isolates to st
 - Snippy
 - IQ-TREE
 
-## Pipeline
 
-Run the pipeline:
 
-```bash
-bash execute.sh 
-# pipeline
+```pipeline
 Raw Reads
    ↓
 FastQC / MultiQC
@@ -50,8 +46,15 @@ Snippy (variant calling)
    ↓
 snippy-core (core SNPs)
    ↓
-IQ-TREE (phylogeny)
+IQ-TREE (phylogeny) 
+```
+## Pipeline
 
+Run the pipeline:
+
+```bash
+bash execute.sh
+```
 ## Outputs
 Assembly statistics
 Genome annotations
