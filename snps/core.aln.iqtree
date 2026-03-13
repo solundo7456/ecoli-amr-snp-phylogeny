@@ -1,0 +1,171 @@
+IQ-TREE 3.0.1 built Jul  9 2025
+
+Input file name: core.aln
+Type of analysis: tree reconstruction + ultrafast bootstrap (1000 replicates)
+Random seed number: 975269
+
+REFERENCES
+----------
+
+To cite IQ-TREE 3 please use:
+
+Thomas K.F. Wong, Nhan Ly-Trong, Huaiyan Ren, Hector Banos, Andrew J. Roger,
+Edward Susko, Chris Bielow, Nicola De Maio, Nick Goldman, Matthew W. Hahn,
+Gavin Huttley, Robert Lanfear, Bui Quang Minh (2025)
+IQ-TREE 3: Phylogenomic Inference Software using Complex Evolutionary Models.
+Submitted.
+
+Please also cite the following paper(s) for the feature(s) that you used:
+
+Since you used ultrafast bootstrap (UFBoot) please also cite: 
+
+Diep Thi Hoang, Olga Chernomor, Arndt von Haeseler, Bui Quang Minh,
+and Le Sy Vinh (2018) UFBoot2: Improving the ultrafast bootstrap
+approximation. Mol. Biol. Evol., 35:518–522.
+https://doi.org/10.1093/molbev/msx281
+
+SEQUENCE ALIGNMENT
+------------------
+
+Input data: 9 sequences with 439 nucleotide sites
+Number of constant sites: 0 (= 0% of all sites)
+Number of invariant (constant or ambiguous constant) sites: 0 (= 0% of all sites)
+Number of parsimony informative sites: 64
+Number of distinct site patterns: 72
+
+SUBSTITUTION PROCESS
+--------------------
+
+Model of substitution: GTR+F+G4
+
+Rate parameter R:
+
+  A-C: 0.9626
+  A-G: 1.5477
+  A-T: 0.2086
+  C-G: 0.0537
+  C-T: 1.5806
+  G-T: 1.0000
+
+State frequencies: (empirical counts from alignment)
+
+  pi(A) = 0.2399
+  pi(C) = 0.2766
+  pi(G) = 0.2384
+  pi(T) = 0.245
+
+Rate matrix Q:
+
+  A    -1.028    0.3989    0.5528   0.07657
+  C     0.346   -0.9452   0.01916    0.5801
+  G    0.5563   0.02224   -0.9455     0.367
+  T   0.07499     0.655    0.3572    -1.087
+
+Model of rate heterogeneity: Gamma with 4 categories
+Gamma shape alpha: 998.4
+
+ Category  Relative_rate  Proportion
+  1         0.9601         0.25
+  2         0.9894         0.25
+  3         1.01           0.25
+  4         1.041          0.25
+Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category.
+
+MAXIMUM LIKELIHOOD TREE
+-----------------------
+
+Log-likelihood of the tree: -2006.8823 (s.e. 31.2838)
+Unconstrained log-likelihood (without tree): -1569.5961
+Number of free parameters (#branches + #model parameters): 24
+Akaike information criterion (AIC) score: 4061.7647
+Corrected Akaike information criterion (AICc) score: 4064.6632
+Bayesian information criterion (BIC) score: 4159.7926
+
+Total tree length (sum of branch lengths): 1.6064
+Sum of internal branch lengths: 0.1618 (10.0717% of tree length)
+
+WARNING: 3 near-zero internal branches (<0.0023) should be treated with caution
+         Such branches are denoted by '**' in the figure below
+
+NOTE: Tree is UNROOTED although outgroup taxon 'Reference' is drawn at root
+Numbers in parentheses are  ultrafast bootstrap support (%)
+
++-----Reference
+|
+|              +--SRR1980975
+|           +--| (99)
+|           |  +--SRR1980990
+|        +**| (19)
+|        |  +--SRR2034230
+|     +**| (19)
+|     |  +--SRR2034226
+|  +**| (34)
+|  |  +--SRR2034223
++--| (98)
+|  +--------------------------------------------------------SRR1980983
+|
+|   +---SRR2034235
++---| (100)
+    +--SRR2034240
+
+Tree in newick format:
+
+(Reference:0.1203446762,(((((SRR1980975:0.0023119558,SRR1980990:0.0235379394)99:0.0091570433,SRR2034230:0.0069009837)19:0.0000010000,SRR2034226:0.0022813786)19:0.0000010000,SRR2034223:0.0022811881)34:0.0000010000,SRR1980983:1.1351056189)98:0.0555355850,(SRR2034235:0.0824265519,SRR2034240:0.0694458202)100:0.0970996498);
+
+CONSENSUS TREE
+--------------
+
+Consensus tree is constructed from 1000 bootstrap trees
+Log-likelihood of consensus tree: -2006.883333
+Robinson-Foulds distance between ML tree and consensus tree: 4
+
+Branches with support >0.000000% are kept (extended consensus)
+Branch lengths are optimized by maximum likelihood on original alignment
+Numbers in parentheses are bootstrap supports (%)
+
++-----Reference
+|
+|        +--SRR1980975
+|     +--| (99)
+|     |  +--SRR1980990
+|  +--| (34)
+|  |  |  +--SRR2034223
+|  |  +--| (21)
+|  |     |  +--SRR2034226
+|  |     +--| (21)
+|  |        +--SRR2034230
++--| (98)
+|  +--------------------------------------------------------SRR1980983
+|
+|   +---SRR2034235
++---| (100)
+    +--SRR2034240
+
+
+Consensus tree in newick format: 
+
+(Reference:0.1203448098,(((SRR1980975:0.0023116810,SRR1980990:0.0235373898)99:0.0091574244,(SRR2034223:0.0022813786,(SRR2034226:0.0022808582,SRR2034230:0.0069012513)21:0.0000021135)21:0.0000021135)34:0.0000024046,SRR1980983:1.1351047619)98:0.0555328835,(SRR2034235:0.0824274954,SRR2034240:0.0694460655)100:0.0970997031);
+
+ALISIM COMMAND
+--------------
+To simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis, you can use the following command:
+
+--alisim simulated_MSA -t core.aln.treefile -m "GTR{0.962606,1.54773,0.208629,0.0536575,1.5806}+F{0.239939,0.276639,0.238421,0.245001}+G4{998.443}" --length 439
+
+To mimic the alignment used to produce this analysis, i.e. simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis *and* copying the same gap positions as the original alignment, you can use the following command:
+
+iqtree -s core.aln --alisim mimicked_MSA
+
+To simulate any number of alignments in either of the two commandlines above, use the --num-alignments options, for example mimic 100 alignments you would use the command line:
+
+iqtree -s core.aln --alisim mimicked_MSA --num-alignments 100
+
+For more information on using AliSim, please visit: www.iqtree.org/doc/AliSim
+
+TIME STAMP
+----------
+
+Date and time: Fri Mar 13 15:12:51 2026
+Total CPU time used: 47.09441 seconds (0h:0m:47s)
+Total wall-clock time used: 26.96214448 seconds (0h:0m:26s)
+

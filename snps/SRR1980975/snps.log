@@ -1,0 +1,696 @@
+### cd /home/ndono_school/Downloads/bioinformatics/AMR/clin
+
+### /home/ndono_school/anaconda3/envs/snp_env/bin/snippy --ctgs /home/ndono_school/Downloads/bioinformatics/AMR/clin/trim_assemble/SRR1980975/contigs.fasta --ref /home/ndono_school/Downloads/bioinformatics/AMR/clin/reference/ecoli_ref.fasta --outdir /home/ndono_school/Downloads/bioinformatics/AMR/clin/snps/SRR1980975 --cpus 4
+
+### samtools faidx reference/ref.fa
+
+
+### bwa index reference/ref.fa
+
+[bwa_index] Pack FASTA... 0.15 sec
+[bwa_index] Construct BWT for the packed sequence...
+[bwa_index] 3.54 seconds elapse.
+[bwa_index] Update BWT... 0.06 sec
+[bwa_index] Pack forward-only FASTA... 0.04 sec
+[bwa_index] Construct SA from BWT and Occ... 0.86 sec
+[main] Version: 0.7.18-r1243-dirty
+[main] CMD: bwa index reference/ref.fa
+[main] Real time: 4.756 sec; CPU: 4.654 sec
+
+### mkdir -p reference/genomes && cp -f reference/ref.fa reference/genomes/ref.fa
+
+
+### ln -sf reference/ref.fa .
+
+
+### ln -sf reference/ref.fa.fai .
+
+
+### mkdir -p reference/ref && gzip -c reference/ref.gff > reference/ref/genes.gff.gz
+
+
+### bwa mem  -Y -M -R '@RG\tID:SRR1980975\tSM:SRR1980975' -t 4 reference/ref.fa fake_reads.fq | samclip --max 10 --ref reference/ref.fa.fai | samtools sort -n -l 0 -T /tmp/snippy.222878. --threads 4 -m 2000M | samtools fixmate -m - - | samtools sort -l 0 -T /tmp/snippy.222878. --threads 4 -m 2000M | samtools markdup -T /tmp/snippy.222878. -r -s - - > snps.bam
+
+READ 454240 WRITTEN 417548 
+EXCLUDED 5351 EXAMINED 448889
+PAIRED 0 SINGLE 448889
+DULPICATE PAIR 0 DUPLICATE SINGLE 36692
+DUPLICATE TOTAL 36692
+
+### samtools index snps.bam
+
+
+### fasta_generate_regions.py reference/ref.fa.fai 812583 > reference/ref.txt
+
+
+### freebayes-parallel reference/ref.txt 4 -p 2 -P 0 -C 10 --min-repeat-entropy 1.5 --strict-vcf -q 13 -m 60 --min-coverage 10 -F 0.05 -f reference/ref.fa snps.bam > snps.raw.vcf
+
+
+### bcftools view --include 'FMT/GT="1/1" && QUAL>=100 && FMT/DP>=10 && (FMT/AO)/(FMT/DP)>=0' snps.raw.vcf  | vt normalize -r reference/ref.fa - | bcftools annotate --remove '^INFO/TYPE,^INFO/DP,^INFO/RO,^INFO/AO,^INFO/AB,^FORMAT/GT,^FORMAT/DP,^FORMAT/RO,^FORMAT/AO,^FORMAT/QR,^FORMAT/QA,^FORMAT/GL' > snps.filt.vcf
+
+
+### cp snps.filt.vcf snps.vcf
+
+
+### /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_to_tab --gff reference/ref.gff --ref reference/ref.fa --vcf snps.vcf > snps.tab
+
+Loading reference: reference/ref.fa
+Loaded 3 sequences.
+Loading features: reference/ref.gff
+Parsing variants: snps.vcf
+Converted 650 SNPs to TAB format.
+
+### /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs snps.filt.vcf > snps.subs.vcf
+
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 30.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 32.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 33.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 34.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 35.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 36.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 37.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 38.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 39.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 40.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 41.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 42.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 43.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 44.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 45.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 46.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 47.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 48.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 49.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 50.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 51.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 52.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 53.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 54.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 55.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 56.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 58.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 59.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 60.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 61.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 62.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 64.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 65.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 66.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 67.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 68.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 69.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 70.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 71.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 73.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 74.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 75.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 76.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 77.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 78.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 79.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 80.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 83.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 84.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 86.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 87.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 88.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 89.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 90.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 92.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 93.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 94.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 95.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 96.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 97.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 99.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 100.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 101.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 102.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 103.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 104.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 105.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 106.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 107.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 108.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 109.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 110.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 111.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 112.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 113.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 114.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 115.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 116.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 117.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 119.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 121.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 122.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 123.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 124.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 125.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 126.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 127.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 128.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 129.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 130.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 131.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 132.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 133.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 135.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 136.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 137.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 138.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 139.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 140.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 141.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 142.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 143.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 144.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 145.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 146.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 147.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 148.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 149.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 150.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 151.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 152.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 153.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 154.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 155.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 156.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 157.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 158.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 159.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 160.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 161.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 162.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 163.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 164.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 165.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 166.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 167.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 168.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 169.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 170.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 171.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 172.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 173.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 174.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 175.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 176.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 177.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 178.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 179.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 180.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 181.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 182.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 183.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 184.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 185.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 186.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 187.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 188.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 189.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 190.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 191.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 192.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 193.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 194.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 195.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 196.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 197.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 198.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 199.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 200.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 201.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 202.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 203.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 204.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 205.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 206.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 207.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 208.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 209.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 210.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 211.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 212.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 213.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 214.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 215.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 216.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 217.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 218.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 219.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 220.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 221.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 222.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 223.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 224.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 225.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 226.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 227.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 228.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 229.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 230.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 231.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 232.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 234.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 236.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 237.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 239.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 240.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 241.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 242.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 243.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 245.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 246.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 247.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 248.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 250.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 251.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 252.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 253.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 254.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 255.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 256.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 257.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 258.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 259.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 260.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 261.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 262.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 263.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 264.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 265.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 266.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 267.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 268.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 269.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 270.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 271.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 272.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 273.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 274.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 275.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 276.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 277.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 278.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 279.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 280.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 281.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 282.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 283.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 284.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 285.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 286.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 287.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 288.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 289.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 290.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 291.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 292.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 293.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 294.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 295.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 296.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 297.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 298.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 299.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 300.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 301.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 302.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 303.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 304.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 305.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 306.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 307.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 308.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 309.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 310.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 311.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 312.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 313.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 314.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 315.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 316.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 317.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 318.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 319.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 320.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 321.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 322.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 323.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 324.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 325.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 326.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 327.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 328.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 329.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 330.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 331.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 332.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 333.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 334.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 335.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 336.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 337.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 338.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 339.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 340.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 341.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 342.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 343.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 344.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 347.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 348.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 349.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 350.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 351.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 352.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 353.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 354.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 355.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 356.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 357.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 358.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 359.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 360.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 361.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 362.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 363.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 364.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 366.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 367.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 368.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 369.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 370.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 371.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 372.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 373.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 374.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 375.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 376.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 377.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 378.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 380.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 381.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 382.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 383.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 384.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 385.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 386.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 387.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 388.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 390.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 391.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 392.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 393.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 394.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 395.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 396.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 397.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 398.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 399.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 401.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 402.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 403.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 404.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 405.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 406.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 407.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 408.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 409.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 410.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 411.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 412.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 413.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 414.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 415.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 416.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 417.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 418.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 419.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 420.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 421.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 422.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 424.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 425.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 426.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 427.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 428.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 429.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 430.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 431.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 432.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 433.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 434.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 435.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 436.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 440.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 441.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 442.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 443.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 444.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 445.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 446.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 448.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 449.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 450.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 451.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 452.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 453.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 454.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 456.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 457.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 458.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 459.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 460.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 461.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 462.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 463.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 464.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 465.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 466.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 467.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 468.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 469.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 471.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 472.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 474.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 475.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 476.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 477.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 478.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 479.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 480.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 481.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 482.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 483.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 484.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 485.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 486.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 487.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 488.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 489.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 491.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 492.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 493.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 494.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 495.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 496.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 497.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 498.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 499.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 500.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 501.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 502.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 505.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 506.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 507.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 508.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 509.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 510.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 511.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 512.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 513.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 515.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 516.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 517.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 519.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 520.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 521.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 522.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 523.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 524.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 525.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 526.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 527.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 528.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 529.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 530.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 531.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 532.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 533.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 534.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 535.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 536.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 537.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 538.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 539.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 540.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 541.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 542.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 543.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 544.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 545.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 546.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 547.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 548.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 549.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 550.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 551.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 552.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 554.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 555.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 556.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 557.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 558.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 559.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 560.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 561.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 562.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 563.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 564.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 565.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 566.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 567.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 568.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 569.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 570.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 571.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 572.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 573.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 574.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 575.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 576.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 577.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 578.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 580.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 582.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 583.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 584.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 585.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 586.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 587.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 588.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 589.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 590.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 591.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 592.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 594.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 595.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 596.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 597.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 598.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 599.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 601.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 602.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 603.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 604.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 605.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 606.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 607.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 608.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 610.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 611.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 614.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 615.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 616.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 617.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 618.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 619.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 620.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 621.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 622.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 623.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 624.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 625.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 626.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 627.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 628.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 629.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 630.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 631.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 632.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 633.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 636.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 638.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 639.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 640.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 641.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 642.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 643.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 644.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 645.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 646.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 647.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 648.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 649.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 650.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 651.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 652.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 653.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 655.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 656.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 658.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 659.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 660.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 661.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 662.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 663.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 664.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 665.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 667.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 668.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 669.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 671.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 672.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 673.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 674.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 675.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 676.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 677.
+Use of uninitialized value in concatenation (.) or string at /home/ndono_school/anaconda3/envs/snp_env/bin/snippy-vcf_extract_subs line 137, <> line 678.
+
+### bcftools convert -Oz -o snps.vcf.gz snps.vcf
+
+
+### bcftools index -f snps.vcf.gz
+
+
+### bcftools consensus -f reference/ref.fa -o snps.consensus.fa snps.vcf.gz
+
+Note: the --sample option not given, applying all records regardless of the genotype
+
+### bcftools convert -Oz -o snps.subs.vcf.gz snps.subs.vcf
+
+[W::vcf_parse] INFO 'AF' is not defined in the header, assuming Type=String
+[W::vcf_parse_format] FORMAT 'GT' is not defined in the header, assuming Type=String
+[W::vcf_parse_format] FORMAT 'QR' is not defined in the header, assuming Type=String
+[W::vcf_parse_format] FORMAT 'QA' is not defined in the header, assuming Type=String
+
+### bcftools index -f snps.subs.vcf.gz
+
+
+### bcftools consensus -f reference/ref.fa -o snps.consensus.subs.fa snps.subs.vcf.gz
+
+Note: the --sample option not given, applying all records regardless of the genotype
+[W::vcf_parse] INFO 'AF' is not defined in the header, assuming Type=String
+[W::vcf_parse_format] FORMAT 'GT' is not defined in the header, assuming Type=String
+[W::vcf_parse_format] FORMAT 'QR' is not defined in the header, assuming Type=String
+[W::vcf_parse_format] FORMAT 'QA' is not defined in the header, assuming Type=String
+
+### rm -f snps.subs.vcf.gz snps.subs.vcf.gz.csi snps.subs.vcf.gz.tbi
+
+
+### rm -f fake_reads\.fq
+

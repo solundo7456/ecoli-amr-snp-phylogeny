@@ -1,0 +1,10 @@
+DateTime	2026-03-13T14:31:15
+ReadFiles	fake_reads.fq
+Reference	/home/ndono_school/Downloads/bioinformatics/AMR/clin/reference/ecoli_ref.fasta
+ReferenceSize	5688085
+Software	snippy 4.0.2
+Variant-COMPLEX	41
+Variant-DEL	9
+Variant-INS	6
+Variant-SNP	379
+VariantTotal	435

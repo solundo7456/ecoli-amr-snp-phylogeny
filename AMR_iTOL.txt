@@ -1,0 +1,24 @@
+DATASET_BINARY
+SEPARATOR TAB
+DATASET_LABEL	AMR
+COLOR	#ff0000
+FIELD_LABELS	CRP Escherichia_coli_CpxR Escherichia_coli_LamB Escherichia_coli_acrA Escherichia_coli_emrE Escherichia_coli_rob H-NS PmrC PmrE PmrF YojI acrB acrD acrE acrF acrS bacA baeR baeS cpxA emrA emrB emrD emrK emrR emrY evgA evgS gadW gadX kdpE leuO marA mdfA mdtA mdtB mdtC mdtE mdtF mdtG mdtH mdtL mdtM mdtN mdtO mdtP mfd msbA patA tolC
+FIELD_COLORS	#1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 #1f77b4 
+DATA
+SRR1980975_card	1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+SRR1980975_resfinder	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+SRR1980983_card	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+SRR1980983_resfinder	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+SRR1980990_card	1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+SRR1980990_resfinder	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+SRR2034223_card	1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+SRR2034223_resfinder	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+SRR2034226_card	1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+SRR2034226_resfinder	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+SRR2034230_card	1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+SRR2034230_resfinder	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+SRR2034235_card	1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+SRR2034235_resfinder	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+SRR2034240_card	1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+SRR2034240_resfinder	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+amr_abricate_summary	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
